@@ -1,0 +1,29 @@
+{
+  "name": "quizluv-server",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "migrate": "ts-node src/scripts/migrate.ts",
+    "seed": "ts-node src/scripts/seed.ts",
+    "setup": "npm run migrate && npm run seed",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.6.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "zod": "^3.23.8",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.7.5",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.3"
+  }
+}
