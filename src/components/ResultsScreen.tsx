@@ -110,6 +110,42 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, onBackToDashboard
           </div>
         </div>
 
+        {/* Detailed Per-Question Results (show correct and incorrect) */}
+        {result.results && result.results.length > 0 && (
+          <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Question Review</h3>
+            <div className="space-y-4">
+              {result.results.map((r) => (
+                <div
+                  key={r.questionId}
+                  className={`border rounded-lg p-4 ${r.isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="text-gray-900 font-medium mr-4">{r.questionText}</div>
+                    <div className={`text-sm font-semibold ${r.isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                      {r.isCorrect ? 'Correct' : 'Incorrect'}
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                    <div className="p-2 rounded border bg-white">
+                      <span className="font-semibold">Your answer:</span> {r.userAnswer ?? '—'}
+                    </div>
+                    <div className="p-2 rounded border bg-white">
+                      <span className="font-semibold">Correct answer:</span> {r.correctAnswer}
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-gray-700">
+                    <div className="p-2 rounded border bg-white"><span className="font-semibold">A.</span> {r.options.A}</div>
+                    <div className="p-2 rounded border bg-white"><span className="font-semibold">B.</span> {r.options.B}</div>
+                    <div className="p-2 rounded border bg-white"><span className="font-semibold">C.</span> {r.options.C}</div>
+                    <div className="p-2 rounded border bg-white"><span className="font-semibold">D.</span> {r.options.D}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Performance Analysis */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance Analysis</h3>
