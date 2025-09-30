@@ -1,9 +1,4 @@
-import { db } from '../db';
 import { submitQuiz } from './utils';
-
-afterAll(() => {
-  db.close();
-});
 
 describe('POST /api/quizzes/:id/submit - validation', () => {
   it('rejects invalid answer format or gracefully handles as incorrect', async () => {

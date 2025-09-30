@@ -1,9 +1,4 @@
-import { db } from '../db';
 import { getQuizQuestions } from './utils';
-
-afterAll(() => {
-  db.close();
-});
 
 describe('GET /api/quizzes/:id/questions', () => {
   it('returns quiz questions without revealing correct answers', async () => {

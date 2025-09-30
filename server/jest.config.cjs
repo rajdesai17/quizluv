@@ -8,6 +8,7 @@ module.exports = {
     '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.json' }],
   },
   setupFiles: ['<rootDir>/src/tests/setup-env.ts'],
+  globalSetup: '<rootDir>/src/tests/global-setup.ts',
 };
 
 

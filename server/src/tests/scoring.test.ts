@@ -1,9 +1,4 @@
-import { db } from '../db';
 import { getQuizQuestions, submitQuiz } from './utils';
-
-afterAll(() => {
-  db.close();
-});
 
 describe('POST /api/quizzes/:id/submit - scoring', () => {
   it('calculates score for a set of answers (seed expects ABB)', async () => {
