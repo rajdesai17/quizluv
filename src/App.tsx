@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Trophy, Star, ArrowLeft, Clock, Flag, User, Home, BookOpen, Settings } from 'lucide-react';
+import { useState } from 'react';
 import WelcomeScreen from './components/WelcomeScreen';
-import Dashboard from './components/Dashboard';
 import QuizScreen from './components/QuizScreen';
 import ResultsScreen from './components/ResultsScreen';
 import Header from './components/Header';
@@ -9,7 +7,7 @@ import { QuizData, UserStats, QuizResult } from './types/quiz';
 import { quizData } from './data/quizData';
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'dashboard' | 'quiz' | 'results'>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'quiz' | 'results'>('welcome');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [currentQuizData, setCurrentQuizData] = useState<QuizData | null>(null);
   const [userStats, setUserStats] = useState<UserStats>({
@@ -19,16 +17,13 @@ function App() {
     averageScore: 85
   });
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
-  const [recentResults, setRecentResults] = useState([
-    { id: 1, category: 'Science and Technology', score: 6, total: 10, progress: 60 },
-    { id: 2, category: 'Featured Categories', score: 9, total: 10, progress: 90 },
-    { id: 3, category: 'Featured Categories', score: 3, total: 10, progress: 30 }
-  ]);
 
-  const startQuiz = (category: string) => {
-    const categoryQuiz = quizData[category];
+  const startQuiz = () => {
+    // Use the first available quiz category
+    const firstCategory = Object.keys(quizData)[0];
+    const categoryQuiz = quizData[firstCategory];
     if (categoryQuiz) {
-      setSelectedCategory(category);
+      setSelectedCategory(firstCategory);
       setCurrentQuizData(categoryQuiz);
       setCurrentScreen('quiz');
     }
@@ -44,14 +39,14 @@ function App() {
     setCurrentScreen('results');
   };
 
-  const goToDashboard = () => {
-    setCurrentScreen('dashboard');
+  const goToWelcome = () => {
+    setCurrentScreen('welcome');
     setCurrentQuizData(null);
     setQuizResult(null);
   };
 
   const startNewQuiz = () => {
-    setCurrentScreen('dashboard');
+    setCurrentScreen('welcome');
   };
 
   return (
@@ -65,15 +60,7 @@ function App() {
       )}
       
       {currentScreen === 'welcome' && (
-        <WelcomeScreen onStart={() => setCurrentScreen('dashboard')} />
-      )}
-      
-      {currentScreen === 'dashboard' && (
-        <Dashboard
-          userStats={userStats}
-          recentResults={recentResults}
-          onStartQuiz={startQuiz}
-        />
+        <WelcomeScreen onStart={startQuiz} />
       )}
       
       {currentScreen === 'quiz' && currentQuizData && (
@@ -81,14 +68,14 @@ function App() {
           quizData={currentQuizData}
           category={selectedCategory}
           onFinish={finishQuiz}
-          onBack={goToDashboard}
+          onBack={goToWelcome}
         />
       )}
       
       {currentScreen === 'results' && quizResult && (
         <ResultsScreen
           result={quizResult}
-          onBackToDashboard={goToDashboard}
+          onBackToDashboard={goToWelcome}
           onStartNewQuiz={startNewQuiz}
         />
       )}

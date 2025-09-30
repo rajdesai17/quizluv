@@ -23,9 +23,9 @@ const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate, userStats })
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             <button
-              onClick={() => onNavigate('dashboard')}
+              onClick={() => onNavigate('welcome')}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                currentScreen === 'dashboard'
+                currentScreen === 'welcome'
                   ? 'text-blue-600 bg-blue-50'
                   : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
               }`}
@@ -34,9 +34,6 @@ const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate, userStats })
             </button>
             <button className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors">
               About
-            </button>
-            <button className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-              Quiz
             </button>
             <button className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors">
               Contact us
@@ -62,9 +59,9 @@ const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate, userStats })
       <div className="md:hidden border-t border-gray-200">
         <div className="flex justify-around py-2">
           <button
-            onClick={() => onNavigate('dashboard')}
+            onClick={() => onNavigate('welcome')}
             className={`flex flex-col items-center py-2 px-3 text-xs ${
-              currentScreen === 'dashboard' ? 'text-blue-600' : 'text-gray-600'
+              currentScreen === 'welcome' ? 'text-blue-600' : 'text-gray-600'
             }`}
           >
             <Home className="w-5 h-5 mb-1" />
@@ -76,11 +73,7 @@ const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate, userStats })
           </button>
           <button className="flex flex-col items-center py-2 px-3 text-xs text-gray-600">
             <Trophy className="w-5 h-5 mb-1" />
-            <span>Stats</span>
-          </button>
-          <button className="flex flex-col items-center py-2 px-3 text-xs text-gray-600">
-            <Settings className="w-5 h-5 mb-1" />
-            <span>Settings</span>
+            <span>Results</span>
           </button>
         </div>
       </div>

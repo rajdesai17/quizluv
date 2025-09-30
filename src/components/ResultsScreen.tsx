@@ -162,7 +162,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, onBackToDashboard
             className="bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3 px-8 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2"
           >
             <Home className="w-5 h-5" />
-            <span>Back to Dashboard</span>
+            <span>Back to Home</span>
           </button>
         </div>
 
