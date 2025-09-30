@@ -1,0 +1,248 @@
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Flag, Check, Clock, BookOpen, Users } from 'lucide-react';
+import { QuizData, QuizResult } from '../types/quiz';
+
+interface QuizScreenProps {
+  quizData: QuizData;
+  category: string;
+  onFinish: (result: QuizResult) => void;
+  onBack: () => void;
+}
+
+const QuizScreen: React.FC<QuizScreenProps> = ({ quizData, category, onFinish, onBack }) => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [score, setScore] = useState(0);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [startTime] = useState(Date.now());
+
+  const question = quizData.questions[currentQuestion];
+  const isLastQuestion = currentQuestion === quizData.questions.length - 1;
+
+  const handleAnswerSelect = (answerIndex: number) => {
+    if (showFeedback) return;
+    
+    setSelectedAnswer(answerIndex);
+    setShowFeedback(true);
+    
+    if (answerIndex === question.correctAnswer) {
+      setScore(prev => prev + 1);
+    }
+
+    setTimeout(() => {
+      if (isLastQuestion) {
+        const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+        const result: QuizResult = {
+          score,
+          total: quizData.questions.length,
+          percentage: Math.round((score / quizData.questions.length) * 100),
+          timeSpent,
+          category
+        };
+        onFinish(result);
+      } else {
+        setCurrentQuestion(prev => prev + 1);
+        setSelectedAnswer(null);
+        setShowFeedback(false);
+      }
+    }, 1500);
+  };
+
+  const progressPercentage = ((currentQuestion + 1) / quizData.questions.length) * 100;
+
+  return (
+    <div className="min-h-screen bg-gray-50 pt-4 animate-fadeIn">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-4 gap-8">
+          {/* Main Quiz Content */}
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-xl shadow-sm p-6 lg:p-8">
+              {/* Quiz Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={onBack}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <ArrowLeft className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <div>
+                    <h1 className="text-xl lg:text-2xl font-bold text-gray-900">{category} Quiz</h1>
+                    <p className="text-sm text-gray-500">Question {currentQuestion + 1} of {quizData.questions.length}</p>
+                  </div>
+                </div>
+                <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                  Skip
+                </button>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-600">
+                    Progress: {Math.round(progressPercentage)}%
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    {currentQuestion + 1}/{quizData.questions.length}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
+                    style={{ width: `${progressPercentage}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Question */}
+              <div className="mb-8">
+                <h2 className="text-xl lg:text-2xl font-semibold text-gray-900 leading-relaxed mb-4">
+                  {question.question}
+                </h2>
+                {question.explanation && showFeedback && (
+                  <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <p className="text-sm text-blue-800">
+                      <strong>Explanation:</strong> {question.explanation}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Answer Options */}
+              <div className="space-y-4 mb-8">
+                {question.options.map((option, index) => {
+                  let buttonClass = "w-full p-4 lg:p-5 text-left font-medium rounded-xl border-2 transition-all duration-200 ";
+                  
+                  if (showFeedback) {
+                    if (index === question.correctAnswer) {
+                      buttonClass += "bg-green-500 border-green-500 text-white shadow-lg";
+                    } else if (index === selectedAnswer) {
+                      buttonClass += "bg-red-500 border-red-500 text-white";
+                    } else {
+                      buttonClass += "bg-gray-100 border-gray-200 text-gray-600";
+                    }
+                  } else {
+                    buttonClass += "bg-white border-gray-200 text-gray-800 hover:bg-blue-50 hover:border-blue-300 transform hover:scale-[1.02]";
+                  }
+
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleAnswerSelect(index)}
+                      className={buttonClass}
+                      disabled={showFeedback}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                            showFeedback && index === question.correctAnswer
+                              ? 'bg-white bg-opacity-20 text-white'
+                              : showFeedback && index === selectedAnswer
+                              ? 'bg-white bg-opacity-20 text-white'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {String.fromCharCode(65 + index)}
+                          </div>
+                          <span className="text-base lg:text-lg">{option}</span>
+                        </div>
+                        {showFeedback && index === question.correctAnswer && (
+                          <Check className="w-6 h-6" />
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                <button className="flex items-center space-x-2 text-gray-500 text-sm hover:text-gray-700 transition-colors">
+                  <Flag className="w-4 h-4" />
+                  <span>Report Question</span>
+                </button>
+                
+                <div className="flex items-center space-x-4">
+                  <button className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors">
+                    Previous
+                  </button>
+                  <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                    {isLastQuestion ? 'Submit' : 'Next'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Quiz Info */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Quiz Information</h3>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{quizData.questions.length} Questions</div>
+                    <div className="text-xs text-gray-500">Total questions</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">~5 minutes</div>
+                    <div className="text-xs text-gray-500">Estimated time</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <Users className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">1,234 taken</div>
+                    <div className="text-xs text-gray-500">Times completed</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Question Progress */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h3 className="font-semibold text-gray-900 mb-4">Question Progress</h3>
+              <div className="grid grid-cols-5 gap-2">
+                {quizData.questions.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium ${
+                      index < currentQuestion
+                        ? 'bg-green-500 text-white'
+                        : index === currentQuestion
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-200 text-gray-600'
+                    }`}
+                  >
+                    {index + 1}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Current Score */}
+            <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-6 text-white">
+              <h3 className="font-semibold mb-2">Current Score</h3>
+              <div className="text-3xl font-bold mb-1">{score}/{currentQuestion + (showFeedback ? 1 : 0)}</div>
+              <div className="text-sm opacity-90">
+                {currentQuestion > 0 ? Math.round((score / (currentQuestion + (showFeedback ? 1 : 0))) * 100) : 0}% correct
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default QuizScreen;
