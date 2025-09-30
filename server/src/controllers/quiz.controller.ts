@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { db } from '../db';
-import { SubmitQuizSchema, QuizPayload, SubmitResult, AnswerLetterSchema } from '../types/quiz.types';
+import { SubmitQuizSchema, QuizPayload, SubmitResult, AnswerLetterSchema, AnswerLetter } from '../types/quiz.types';
 
 export function getQuizQuestions(req: Request, res: Response, next: NextFunction) {
   try {
@@ -23,11 +23,11 @@ export function getQuizQuestions(req: Request, res: Response, next: NextFunction
   }
 }
 
-function optionIdToLetter(index: number): 'A' | 'B' | 'C' | 'D' {
+function optionIdToLetter(index: number): AnswerLetter {
   return (['A', 'B', 'C', 'D'] as const)[index];
 }
 
-function letterToIndex(letter: 'A' | 'B' | 'C' | 'D'): number {
+function letterToIndex(letter: AnswerLetter): number {
   return { A: 0, B: 1, C: 2, D: 3 }[letter];
 }
 
@@ -48,10 +48,25 @@ export function submitQuiz(req: Request, res: Response, next: NextFunction) {
     let score = 0;
     const detailed = questions.map((q) => {
       const options = optsStmt.all(q.id) as { id: number; text: string; is_correct: number }[];
+
+      // Guard against malformed data
+      if (options.length !== 4) {
+        const safe = { A: '', B: '', C: '', D: '' } as const;
+        return {
+          questionId: q.id,
+          questionText: q.text,
+          options: safe,
+          userAnswer: null,
+          correctAnswer: 'A' as AnswerLetter,
+          isCorrect: false
+        };
+      }
+
       const letterOptions = { A: options[0].text, B: options[1].text, C: options[2].text, D: options[3].text } as const;
       const correctIndex = options.findIndex(o => o.is_correct === 1);
-      const correctLetter = optionIdToLetter(correctIndex);
-      const userLetter = (answersRecord[String(q.id)] ?? null) as (typeof AnswerLetterSchema)['_type'] | null;
+      const correctLetter = optionIdToLetter(Math.max(0, correctIndex));
+      const raw = answersRecord[String(q.id)] ?? null;
+      const userLetter = (raw && AnswerLetterSchema.safeParse(raw).success ? (raw as AnswerLetter) : null);
       const isCorrect = userLetter === correctLetter;
       if (isCorrect) score += 1;
       return {

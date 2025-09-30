@@ -6,7 +6,9 @@ import { quizRouter } from './routes/quiz.routes';
 
 dotenv.config();
 const app = express();
-app.use(cors());
+
+const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
+app.use(cors({ origin: corsOrigin }));
 app.use(express.json());
 
 // Mount versioned API
