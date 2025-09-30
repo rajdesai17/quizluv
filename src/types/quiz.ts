@@ -1,15 +1,6 @@
-export interface Question {
-  id: number;
-  question: string;
-  options: string[];
-  correctAnswer: number;
-  explanation?: string;
-}
-
-export interface QuizData {
-  category: string;
-  questions: Question[];
-}
+export interface ClientOption { id: number; text: string }
+export interface ClientQuestion { id: number; text: string; options: ClientOption[] }
+export interface QuizData { id: number; name: string; questions: ClientQuestion[] }
 
 export interface UserStats {
   points: number;
@@ -24,6 +15,14 @@ export interface QuizResult {
   percentage: number;
   timeSpent: number;
   category: string;
+  results?: Array<{
+    questionId: number;
+    questionText: string;
+    options: { A: string; B: string; C: string; D: string };
+    userAnswer: 'A' | 'B' | 'C' | 'D' | null;
+    correctAnswer: 'A' | 'B' | 'C' | 'D';
+    isCorrect: boolean;
+  }>;
 }
 
 export interface RecentResult {

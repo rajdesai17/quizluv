@@ -4,12 +4,14 @@ import QuizScreen from './components/QuizScreen';
 import ResultsScreen from './components/ResultsScreen';
 import Header from './components/Header';
 import { QuizData, UserStats, QuizResult } from './types/quiz';
-import { quizData } from './data/quizData';
+import { fetchQuiz } from './api/client';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<'welcome' | 'quiz' | 'results'>('welcome');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('General Knowledge');
   const [currentQuizData, setCurrentQuizData] = useState<QuizData | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const [userStats, setUserStats] = useState<UserStats>({
     points: 2300,
     trophies: 32,
@@ -18,14 +20,20 @@ function App() {
   });
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
 
-  const startQuiz = () => {
-    // Use the first available quiz category
-    const firstCategory = Object.keys(quizData)[0];
-    const categoryQuiz = quizData[firstCategory];
-    if (categoryQuiz) {
-      setSelectedCategory(firstCategory);
-      setCurrentQuizData(categoryQuiz);
+  const startQuiz = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // For now always use quiz id 1
+      const apiQuiz = await fetchQuiz(1);
+      setCurrentQuizData({ id: apiQuiz.id, name: apiQuiz.name, questions: apiQuiz.questions });
+      setSelectedCategory(apiQuiz.name);
       setCurrentScreen('quiz');
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : 'Failed to load quiz';
+      setError(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,7 +68,19 @@ function App() {
       )}
       
       {currentScreen === 'welcome' && (
-        <WelcomeScreen onStart={startQuiz} />
+        <>
+          {error && (
+            <div className="max-w-2xl mx-auto mt-4 p-3 bg-red-50 text-red-700 border border-red-200 rounded">
+              {error}
+            </div>
+          )}
+          {loading && (
+            <div className="max-w-2xl mx-auto mt-4 p-3 bg-blue-50 text-blue-700 border border-blue-200 rounded">
+              Loading quiz...
+            </div>
+          )}
+          <WelcomeScreen onStart={startQuiz} />
+        </>
       )}
       
       {currentScreen === 'quiz' && currentQuizData && (
