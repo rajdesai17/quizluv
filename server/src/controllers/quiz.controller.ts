@@ -27,10 +27,6 @@ function optionIdToLetter(index: number): AnswerLetter {
   return (['A', 'B', 'C', 'D'] as const)[index];
 }
 
-function letterToIndex(letter: AnswerLetter): number {
-  return { A: 0, B: 1, C: 2, D: 3 }[letter];
-}
-
 export function submitQuiz(req: Request, res: Response, next: NextFunction) {
   try {
     const quizId = Number(req.params.id);

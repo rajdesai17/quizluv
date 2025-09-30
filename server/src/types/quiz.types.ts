@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const AnswerLetterSchema = z.enum(['A', 'B', 'C', 'D']);
+export type AnswerLetter = z.infer<typeof AnswerLetterSchema>;
 
 export const SubmitQuizSchema = z.object({
   answers: z.record(

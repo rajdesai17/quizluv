@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, Home, BookOpen, Settings, Trophy } from 'lucide-react';
+import { User, Home, BookOpen, Trophy } from 'lucide-react';
 import { UserStats } from '../types/quiz';
 
 interface HeaderProps {

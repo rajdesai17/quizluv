@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, Flag, Clock, BookOpen, Users } from 'lucide-react';
 import { QuizData, QuizResult } from '../types/quiz';
 import { submitQuiz, AnswerLetter } from '../api/client';
@@ -15,11 +15,12 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ quizData, category, onFinish, o
   const [answers, setAnswers] = useState<Record<number, number>>({}); // questionId -> optionId
   const [submitting, setSubmitting] = useState(false);
   const [startTime] = useState(Date.now());
-  const [timeLeft, setTimeLeft] = useState(10); // seconds per question
   const QUESTION_TIME_LIMIT = 10;
+  const [timeLeft, setTimeLeft] = useState(QUESTION_TIME_LIMIT);
 
   const question = quizData.questions[currentQuestion];
   const isLastQuestion = currentQuestion === quizData.questions.length - 1;
+  const progressPercentage = useMemo(() => ((currentQuestion + 1) / quizData.questions.length) * 100, [currentQuestion, quizData.questions.length]);
 
   // Reset and start timer whenever question changes
   useEffect(() => {
@@ -31,7 +32,6 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ quizData, category, onFinish, o
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(interval);
-          // On timeout, move to next question or submit
           handleTimeout();
           return 0;
         }
@@ -101,7 +101,7 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ quizData, category, onFinish, o
     }
   };
 
-  const progressPercentage = ((currentQuestion + 1) / quizData.questions.length) * 100;
+  // progressPercentage moved to useMemo for clarity
 
   return (
     <div className="min-h-screen bg-gray-50 pt-4 animate-fadeIn">
