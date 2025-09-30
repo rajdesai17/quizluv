@@ -17,9 +17,13 @@ app.use('/api/quizzes', quizRouter);
 // Error handler (last)
 app.use(errorHandler);
 
-const PORT = Number(process.env.PORT || 4000);
-app.listen(PORT, () => {
-  console.log(`API running on http://localhost:${PORT}`);
-});
+export default app;
+
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = Number(process.env.PORT || 4000);
+  app.listen(PORT, () => {
+    console.log(`API running on http://localhost:${PORT}`);
+  });
+}
 
 
