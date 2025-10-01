@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { User, Home, BookOpen, Trophy } from 'lucide-react';
 import { UserStats } from '../types/quiz';
+import Navbar from './Navbar';
 
 interface HeaderProps {
   currentScreen: string;
@@ -21,24 +23,7 @@ const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate, userStats })
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <button
-              onClick={() => onNavigate('welcome')}
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                currentScreen === 'welcome'
-                  ? 'text-blue-600 bg-blue-50'
-                  : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-              }`}
-            >
-              Home
-            </button>
-            <button className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-              About
-            </button>
-            <button className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-              Contact us
-            </button>
-          </nav>
+          <Navbar currentScreen={currentScreen} onNavigate={onNavigate} />
 
           {/* User Profile & Stats */}
           <div className="flex items-center space-x-4">
@@ -58,23 +43,23 @@ const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate, userStats })
       {/* Mobile Navigation */}
       <div className="md:hidden border-t border-gray-200">
         <div className="flex justify-around py-2">
-          <button
-            onClick={() => onNavigate('welcome')}
+          <Link
+            to="/"
             className={`flex flex-col items-center py-2 px-3 text-xs ${
               currentScreen === 'welcome' ? 'text-blue-600' : 'text-gray-600'
             }`}
           >
             <Home className="w-5 h-5 mb-1" />
             <span>Home</span>
-          </button>
-          <button className="flex flex-col items-center py-2 px-3 text-xs text-gray-600">
+          </Link>
+          <Link className="flex flex-col items-center py-2 px-3 text-xs text-gray-600" to="/quiz">
             <BookOpen className="w-5 h-5 mb-1" />
             <span>Quiz</span>
-          </button>
-          <button className="flex flex-col items-center py-2 px-3 text-xs text-gray-600">
+          </Link>
+          <Link className="flex flex-col items-center py-2 px-3 text-xs text-gray-600" to="/results">
             <Trophy className="w-5 h-5 mb-1" />
             <span>Results</span>
-          </button>
+          </Link>
         </div>
       </div>
     </header>

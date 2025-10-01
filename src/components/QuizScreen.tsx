@@ -116,6 +116,7 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ quizData, category, onFinish, o
                   <button
                     onClick={onBack}
                     className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    aria-label="Go back"
                   >
                     <ArrowLeft className="w-5 h-5 text-gray-600" />
                   </button>
@@ -137,7 +138,7 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ quizData, category, onFinish, o
                       <span className="tabular-nums">{timeLeft}s</span>
                     </div>
                   </div>
-                  <button className="text-blue-600 hover:text-blue-700 font-medium text-sm" onClick={goNext} disabled={isLastQuestion || submitting}>
+                  <button className="text-blue-600 hover:text-blue-700 font-medium text-sm" onClick={goNext} disabled={isLastQuestion || submitting} aria-disabled={isLastQuestion || submitting}>
                     Skip
                   </button>
                 </div>
@@ -163,7 +164,7 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ quizData, category, onFinish, o
 
               {/* Question */}
               <div className="mb-8">
-                <h2 className="text-xl lg:text-2xl font-semibold text-gray-900 leading-relaxed mb-4">
+                <h2 className="text-xl lg:text-2xl font-semibold text-gray-900 leading-relaxed mb-4" id="question-text">
                   {question.text}
                 </h2>
               </div>
@@ -182,6 +183,8 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ quizData, category, onFinish, o
                       onClick={() => handleAnswerSelect(option.id)}
                       className={buttonClass}
                       disabled={submitting}
+                      aria-pressed={selected}
+                      aria-describedby="question-text"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
@@ -204,15 +207,17 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ quizData, category, onFinish, o
                 </button>
                 
                 <div className="flex items-center space-x-4">
-                  <button onClick={goPrev} disabled={currentQuestion === 0 || submitting} className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors disabled:opacity-50">
+                  <button onClick={goPrev} disabled={currentQuestion === 0 || submitting} aria-disabled={currentQuestion === 0 || submitting} className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors disabled:opacity-50">
                     Previous
                   </button>
                   {isLastQuestion ? (
-                    <button onClick={handleSubmit} disabled={submitting} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50">
-                      {submitting ? 'Submitting...' : 'Submit'}
+                    <button onClick={handleSubmit} disabled={submitting} aria-busy={submitting} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50">
+                      {submitting ? (
+                        <span className="inline-flex items-center"><span className="spinner mr-2" aria-hidden="true"></span>Submitting...</span>
+                      ) : 'Submit'}
                     </button>
                   ) : (
-                    <button onClick={goNext} disabled={submitting} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                    <button onClick={goNext} disabled={submitting} aria-disabled={submitting} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
                       Next
                     </button>
                   )}

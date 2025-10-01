@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import WelcomeScreen from './components/WelcomeScreen';
 import QuizScreen from './components/QuizScreen';
 import ResultsScreen from './components/ResultsScreen';
@@ -7,6 +8,7 @@ import { QuizData, UserStats, QuizResult } from './types/quiz';
 import { fetchQuiz } from './api/client';
 
 function App() {
+  const navigate = useNavigate();
   const [currentScreen, setCurrentScreen] = useState<'welcome' | 'quiz' | 'results'>('welcome');
   const [selectedCategory, setSelectedCategory] = useState<string>('General Knowledge');
   const [currentQuizData, setCurrentQuizData] = useState<QuizData | null>(null);
@@ -29,6 +31,7 @@ function App() {
       setCurrentQuizData({ id: apiQuiz.id, name: apiQuiz.name, questions: apiQuiz.questions });
       setSelectedCategory(apiQuiz.name);
       setCurrentScreen('quiz');
+      navigate('/quiz');
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : 'Failed to load quiz';
       setError(message);
@@ -45,10 +48,12 @@ function App() {
       completedQuizzes: prev.completedQuizzes + 1
     }));
     setCurrentScreen('results');
+    navigate('/results');
   };
 
   const goToWelcome = () => {
     setCurrentScreen('welcome');
+    navigate('/');
     setCurrentQuizData(null);
     setQuizResult(null);
   };
@@ -57,48 +62,67 @@ function App() {
     setCurrentScreen('welcome');
   };
 
+  const headerVisible = useMemo(() => currentScreen !== 'welcome', [currentScreen]);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {currentScreen !== 'welcome' && (
+      {headerVisible && (
         <Header 
           currentScreen={currentScreen}
-          onNavigate={setCurrentScreen}
+          onNavigate={(screen) => {
+            setCurrentScreen(screen);
+            navigate(screen === 'welcome' ? '/' : screen === 'quiz' ? '/quiz' : '/results');
+          }}
           userStats={userStats}
         />
       )}
-      
-      {currentScreen === 'welcome' && (
-        <>
-          {error && (
-            <div className="max-w-2xl mx-auto mt-4 p-3 bg-red-50 text-red-700 border border-red-200 rounded">
-              {error}
-            </div>
-          )}
-          {loading && (
-            <div className="max-w-2xl mx-auto mt-4 p-3 bg-blue-50 text-blue-700 border border-blue-200 rounded">
-              Loading quiz...
-            </div>
-          )}
-          <WelcomeScreen onStart={startQuiz} />
-        </>
-      )}
-      
-      {currentScreen === 'quiz' && currentQuizData && (
-        <QuizScreen
-          quizData={currentQuizData}
-          category={selectedCategory}
-          onFinish={finishQuiz}
-          onBack={goToWelcome}
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              {error && (
+                <div className="max-w-2xl mx-auto mt-4 p-3 bg-red-50 text-red-700 border border-red-200 rounded">
+                  {error}
+                </div>
+              )}
+              {loading && (
+                <div className="max-w-2xl mx-auto mt-4 p-3 bg-blue-50 text-blue-700 border border-blue-200 rounded">
+                  Loading quiz...
+                </div>
+              )}
+              <WelcomeScreen onStart={startQuiz} />
+            </>
+          }
         />
-      )}
-      
-      {currentScreen === 'results' && quizResult && (
-        <ResultsScreen
-          result={quizResult}
-          onBackToDashboard={goToWelcome}
-          onStartNewQuiz={startNewQuiz}
+        <Route
+          path="/quiz"
+          element={currentQuizData ? (
+            <QuizScreen
+              quizData={currentQuizData}
+              category={selectedCategory}
+              onFinish={finishQuiz}
+              onBack={goToWelcome}
+            />
+          ) : (
+            <Navigate to="/" replace />
+          )}
         />
-      )}
+        <Route
+          path="/results"
+          element={quizResult ? (
+            <ResultsScreen
+              result={quizResult}
+              onBackToDashboard={goToWelcome}
+              onStartNewQuiz={startNewQuiz}
+            />
+          ) : (
+            <Navigate to="/" replace />
+          )}
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </div>
   );
 }
