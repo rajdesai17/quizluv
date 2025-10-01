@@ -24,7 +24,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, onBackToDashboard
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-4 animate-fadeIn">
+    <div className="pt-4 animate-fadeIn">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
           <div className={`w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${

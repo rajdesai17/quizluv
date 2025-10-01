@@ -104,7 +104,7 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ quizData, category, onFinish, o
   // progressPercentage moved to useMemo for clarity
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-4 animate-fadeIn">
+    <div className="pt-4 animate-fadeIn">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Main Quiz Content */}

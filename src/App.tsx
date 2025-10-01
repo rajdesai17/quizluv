@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import WelcomeScreen from './components/WelcomeScreen';
 import QuizScreen from './components/QuizScreen';
 import ResultsScreen from './components/ResultsScreen';
 import Header from './components/Header';
+import Layout from './components/Layout';
 import { QuizData, UserStats, QuizResult } from './types/quiz';
 import { fetchQuiz } from './api/client';
 
@@ -62,20 +63,16 @@ function App() {
     setCurrentScreen('welcome');
   };
 
-  const headerVisible = useMemo(() => currentScreen !== 'welcome', [currentScreen]);
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {headerVisible && (
-        <Header 
-          currentScreen={currentScreen}
-          onNavigate={(screen) => {
-            setCurrentScreen(screen);
-            navigate(screen === 'welcome' ? '/' : screen === 'quiz' ? '/quiz' : '/results');
-          }}
-          userStats={userStats}
-        />
-      )}
+    <Layout>
+      <Header 
+        currentScreen={currentScreen}
+        onNavigate={(screen) => {
+          setCurrentScreen(screen);
+          navigate(screen === 'welcome' ? '/' : screen === 'quiz' ? '/quiz' : '/results');
+        }}
+        userStats={userStats}
+      />
 
       <Routes>
         <Route
@@ -123,7 +120,7 @@ function App() {
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </div>
+    </Layout>
   );
 }
 
