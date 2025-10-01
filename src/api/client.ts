@@ -44,6 +44,24 @@ export async function submitQuiz(quizId: number, answers: Record<number, AnswerL
   return { score: data.score, total: data.totalQuestions, percentage: data.percentage, results: data.results };
 }
 
+export async function postLeaderboard(entry: { name: string; category: string; score: number; time: number }): Promise<void> {
+  const res = await fetch(`${API_BASE_URL}/quizzes/leaderboard`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(entry)
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to save leaderboard: ${res.status}`);
+  }
+}
+
+export async function getLeaderboard(): Promise<Array<{ name: string; category: string; score: number; time: number }>> {
+  const res = await fetch(`${API_BASE_URL}/quizzes/leaderboard`);
+  if (!res.ok) throw new Error(`Failed to fetch leaderboard: ${res.status}`);
+  const body = (await res.json()) as { success: boolean; data?: Array<{ name: string; category: string; score: number; time: number }> };
+  return body.data ?? [];
+}
+
 async function safeErrorMessage(res: Response): Promise<string> {
   try {
     const json = (await res.json()) as { error?: string };

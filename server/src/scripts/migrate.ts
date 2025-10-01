@@ -20,6 +20,15 @@ function migrate() {
       text TEXT NOT NULL,
       is_correct INTEGER NOT NULL DEFAULT 0
     );
+
+    CREATE TABLE IF NOT EXISTS leaderboard (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      category TEXT NOT NULL,
+      score INTEGER NOT NULL,
+      time_seconds INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
   console.log('Migration completed.');
 }

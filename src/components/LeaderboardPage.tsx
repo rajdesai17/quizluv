@@ -1,21 +1,40 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { getLeaderboard } from '../api/client';
 import { LeaderboardEntry } from '../types/quiz';
 
 const STORAGE_KEY = 'quizluv_leaderboard';
 
 const LeaderboardPage: React.FC = () => {
+  const [serverEntries, setServerEntries] = useState<LeaderboardEntry[]>([]);
+
+  useEffect(() => {
+    getLeaderboard().then((rows) => {
+      const sanitized = rows.filter(e => Number.isFinite(e.score) && Number.isFinite(e.time));
+      setServerEntries(sanitized);
+    }).catch(() => {});
+  }, []);
+
   const entries = useMemo<LeaderboardEntry[]>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       const list = raw ? (JSON.parse(raw) as LeaderboardEntry[]) : [];
-      return [...list].sort((a, b) => {
+      const sanitized = list.filter(e => {
+        const validScore = Number.isFinite(e.score);
+        const validTime = Number.isFinite(e.time);
+        const hasName = typeof e.name === 'string' && e.name.trim().length > 0;
+        const hasCat = typeof e.category === 'string' && e.category.trim().length > 0;
+        return validScore && validTime && hasName && hasCat;
+      });
+      // Merge server and local and then sort
+      const merged = [...serverEntries, ...sanitized];
+      return merged.sort((a, b) => {
         if (b.score !== a.score) return b.score - a.score;
         return a.time - b.time; // lower time ranks higher when same score
       });
     } catch {
-      return [];
+      return serverEntries;
     }
-  }, []);
+  }, [serverEntries]);
 
   return (
     <div className="pt-6 animate-fadeIn">

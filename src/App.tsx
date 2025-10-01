@@ -6,7 +6,7 @@ import ResultsScreen from './components/ResultsScreen';
 import Header from './components/Header';
 import Layout from './components/Layout';
 import { QuizData, UserStats, QuizResult, LeaderboardEntry } from './types/quiz';
-import { fetchQuiz } from './api/client';
+import { fetchQuiz, postLeaderboard } from './api/client';
 import NameModal from './components/NameModal';
 import LeaderboardPage from './components/LeaderboardPage';
 
@@ -61,7 +61,10 @@ function App() {
         category: result.category,
         time: result.timeSpent
       };
-      localStorage.setItem(key, JSON.stringify([entry, ...existing].slice(0, 100)));
+      const sanitized = [entry, ...existing].filter(e => Number.isFinite(e.score) && Number.isFinite(e.time));
+      localStorage.setItem(key, JSON.stringify(sanitized.slice(0, 100)));
+      // Attempt to also persist remotely; ignore failure to keep UX smooth
+      postLeaderboard(entry).catch(() => {});
     } catch {}
     setCurrentScreen('results');
     navigate('/results');
