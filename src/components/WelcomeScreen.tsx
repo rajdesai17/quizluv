@@ -35,13 +35,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
           </div>
 
           {/* Features */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-8">
-            <div className="text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <BookOpen className="w-6 h-6 text-blue-600" />
-              </div>
-              <div className="text-sm font-medium text-gray-900">Multiple Topics</div>
-            </div>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 pt-8">
             <div className="text-center">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
                 <Trophy className="w-6 h-6 text-green-600" />

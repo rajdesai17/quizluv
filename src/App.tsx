@@ -5,8 +5,10 @@ import QuizScreen from './components/QuizScreen';
 import ResultsScreen from './components/ResultsScreen';
 import Header from './components/Header';
 import Layout from './components/Layout';
-import { QuizData, UserStats, QuizResult } from './types/quiz';
+import { QuizData, UserStats, QuizResult, LeaderboardEntry } from './types/quiz';
 import { fetchQuiz } from './api/client';
+import NameModal from './components/NameModal';
+import LeaderboardPage from './components/LeaderboardPage';
 
 function App() {
   const navigate = useNavigate();
@@ -22,6 +24,8 @@ function App() {
     averageScore: 85
   });
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
+  const [playerName, setPlayerName] = useState<string>('');
+  const [askNameOpen, setAskNameOpen] = useState<boolean>(false);
 
   const startQuiz = async () => {
     try {
@@ -48,6 +52,16 @@ function App() {
       points: prev.points + (result.score * 10),
       completedQuizzes: prev.completedQuizzes + 1
     }));
+    try {
+      const key = 'quizluv_leaderboard';
+      const existing = JSON.parse(localStorage.getItem(key) || '[]') as LeaderboardEntry[];
+      const entry: LeaderboardEntry = {
+        name: playerName || 'Player',
+        score: result.score,
+        category: result.category
+      };
+      localStorage.setItem(key, JSON.stringify([entry, ...existing].slice(0, 100)));
+    } catch {}
     setCurrentScreen('results');
     navigate('/results');
   };
@@ -89,7 +103,7 @@ function App() {
                   Loading quiz...
                 </div>
               )}
-              <WelcomeScreen onStart={startQuiz} />
+              <WelcomeScreen onStart={() => setAskNameOpen(true)} />
             </>
           }
         />
@@ -118,8 +132,18 @@ function App() {
             <Navigate to="/" replace />
           )}
         />
+        <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <NameModal
+        isOpen={askNameOpen}
+        onClose={() => setAskNameOpen(false)}
+        onConfirm={async (name) => {
+          setPlayerName(name);
+          setAskNameOpen(false);
+          await startQuiz();
+        }}
+      />
     </Layout>
   );
 }

@@ -56,10 +56,11 @@ const Header: React.FC<HeaderProps> = ({ currentScreen, onNavigate, userStats })
             <BookOpen className="w-5 h-5 mb-1" />
             <span>Quiz</span>
           </Link>
-          <Link className="flex flex-col items-center py-2 px-3 text-xs text-gray-600" to="/results">
+          <Link className="flex flex-col items-center py-2 px-3 text-xs text-gray-600" to="/leaderboard">
             <Trophy className="w-5 h-5 mb-1" />
-            <span>Results</span>
+            <span>Leaderboard</span>
           </Link>
+          {/* Results link removed per request */}
         </div>
       </div>
     </header>

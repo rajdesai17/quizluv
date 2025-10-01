@@ -34,9 +34,10 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, onBackToDashboard
               result.percentage >= 80 ? 'text-green-600' : result.percentage >= 60 ? 'text-blue-600' : 'text-orange-600'
             }`} />
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
             Quiz Complete!
           </h1>
+          <p className="text-gray-600 mb-2">Well done{result.category ? ` on the ${result.category} quiz` : ''}{/* player name is shown in stats below if needed */}</p>
           <p className="text-xl text-gray-600 mb-2">{getPerformanceMessage()}</p>
           <p className="text-gray-500">{result.category} Quiz Results</p>
         </div>

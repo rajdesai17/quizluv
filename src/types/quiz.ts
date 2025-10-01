@@ -32,3 +32,9 @@ export interface RecentResult {
   total: number;
   progress: number;
 }
+
+export interface LeaderboardEntry {
+  name: string;
+  score: number;
+  category: string;
+}

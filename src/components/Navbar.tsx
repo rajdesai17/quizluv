@@ -19,9 +19,10 @@ const Navbar: React.FC<NavbarProps> = ({ currentScreen }) => {
       <Link to="/quiz" className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors">
         Quiz
       </Link>
-      <Link to="/results" className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-        Results
+      <Link to="/leaderboard" className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+        Leaderboard
       </Link>
+      {/* Results link removed per request */}
     </nav>
   );
 };
