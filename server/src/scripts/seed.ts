@@ -2,10 +2,11 @@ import { db, withTransaction } from '../db';
 
 function seed() {
   return withTransaction(() => {
-    const clearStmt = db.prepare('DELETE FROM options');
-    clearStmt.run();
+    // Clear data and reset autoincrement sequences for stable IDs in dev
+    db.prepare('DELETE FROM options').run();
     db.prepare('DELETE FROM questions').run();
     db.prepare('DELETE FROM quizzes').run();
+    db.prepare("DELETE FROM sqlite_sequence WHERE name IN ('options','questions','quizzes')").run();
 
     const insertQuiz = db.prepare('INSERT INTO quizzes (name) VALUES (?)');
     const quizResult = insertQuiz.run('General Knowledge');
