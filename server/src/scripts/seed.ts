@@ -42,6 +42,69 @@ function seed() {
           { text: '60', correct: 0 },
           { text: '45', correct: 0 }
         ]
+      },
+      {
+        text: 'Which language is primarily used for styling web pages?',
+        options: [
+          { text: 'HTML', correct: 0 },
+          { text: 'CSS', correct: 1 },
+          { text: 'Python', correct: 0 },
+          { text: 'C++', correct: 0 }
+        ]
+      },
+      {
+        text: 'What does HTTP stand for?',
+        options: [
+          { text: 'HyperText Transfer Protocol', correct: 1 },
+          { text: 'HighText Transfer Protocol', correct: 0 },
+          { text: 'Hyperlink Text Transfer Process', correct: 0 },
+          { text: 'Hyper Transfer Text Protocol', correct: 0 }
+        ]
+      },
+      {
+        text: 'Who wrote "Romeo and Juliet"?',
+        options: [
+          { text: 'William Shakespeare', correct: 1 },
+          { text: 'Charles Dickens', correct: 0 },
+          { text: 'Jane Austen', correct: 0 },
+          { text: 'Mark Twain', correct: 0 }
+        ]
+      },
+      {
+        text: 'What is the largest ocean on Earth?',
+        options: [
+          { text: 'Indian Ocean', correct: 0 },
+          { text: 'Pacific Ocean', correct: 1 },
+          { text: 'Atlantic Ocean', correct: 0 },
+          { text: 'Arctic Ocean', correct: 0 }
+        ]
+      },
+      {
+        text: 'How many continents are there on Earth?',
+        options: [
+          { text: '6', correct: 0 },
+          { text: '7', correct: 1 },
+          { text: '5', correct: 0 },
+          { text: '8', correct: 0 }
+        ]
+      },
+      {
+        text: 'Which gas do plants primarily absorb for photosynthesis?',
+        options: [
+          { text: 'Oxygen', correct: 0 },
+          { text: 'Carbon Dioxide', correct: 1 },
+          { text: 'Nitrogen', correct: 0 },
+          { text: 'Hydrogen', correct: 0 }
+        ]
+      },
+      {
+        text: 'What is the square root of 144?',
+        options: [
+          { text: '10', correct: 0 },
+          { text: '12', correct: 1 },
+          { text: '11', correct: 0 },
+          { text: '13', correct: 0 }
+        ]
       }
     ];
 

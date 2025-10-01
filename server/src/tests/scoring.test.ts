@@ -1,7 +1,7 @@
 import { getQuizQuestions, submitQuiz } from './utils';
 
 describe('POST /api/quizzes/:id/submit - scoring', () => {
-  it('calculates score for a set of answers (seed expects ABB)', async () => {
+  it('calculates score for a set of answers (first three ABB)', async () => {
     const getRes = await getQuizQuestions(1);
     const questions: Array<{ id: number }> = getRes.body.data.questions;
 
@@ -14,9 +14,9 @@ describe('POST /api/quizzes/:id/submit - scoring', () => {
 
     expect(submitRes.status).toBe(200);
     expect(submitRes.body.success).toBe(true);
-    expect(submitRes.body.data.totalQuestions).toBe(3);
+    expect(submitRes.body.data.totalQuestions).toBe(10);
     expect(submitRes.body.data.score).toBeGreaterThanOrEqual(2);
-    expect(submitRes.body.data.results).toHaveLength(3);
+    expect(submitRes.body.data.results).toHaveLength(10);
   });
 });
 
