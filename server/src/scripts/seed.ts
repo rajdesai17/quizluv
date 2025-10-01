@@ -108,10 +108,22 @@ function seed() {
       }
     ];
 
+    // Fisher-Yates shuffle helper
+    function shuffle<T>(arr: T[]): T[] {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
     for (const q of questions) {
       const qRes = insertQuestion.run(quizId, q.text);
       const questionId = Number(qRes.lastInsertRowid);
-      for (const opt of q.options) {
+      // Randomize options order so correct answer isn't always A/B
+      const randomizedOptions = shuffle(q.options);
+      for (const opt of randomizedOptions) {
         insertOption.run(questionId, opt.text, opt.correct ? 1 : 0);
       }
     }
