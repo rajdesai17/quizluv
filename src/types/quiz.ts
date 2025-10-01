@@ -37,4 +37,5 @@ export interface LeaderboardEntry {
   name: string;
   score: number;
   category: string;
+  time: number; // seconds
 }

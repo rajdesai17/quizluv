@@ -58,7 +58,8 @@ function App() {
       const entry: LeaderboardEntry = {
         name: playerName || 'Player',
         score: result.score,
-        category: result.category
+        category: result.category,
+        time: result.timeSpent
       };
       localStorage.setItem(key, JSON.stringify([entry, ...existing].slice(0, 100)));
     } catch {}
