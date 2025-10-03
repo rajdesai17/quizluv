@@ -25,9 +25,19 @@ const LeaderboardPage: React.FC = () => {
         const hasCat = typeof e.category === 'string' && e.category.trim().length > 0;
         return validScore && validTime && hasName && hasCat;
       });
-      // Merge server and local and then sort
+      // Merge server and local, deduplicate, and then sort
       const merged = [...serverEntries, ...sanitized];
-      return merged.sort((a, b) => {
+      const deduplicated = merged.filter((entry, index, arr) => {
+        // Find first occurrence of this name+category+score+time combination
+        const firstIndex = arr.findIndex(e => 
+          e.name === entry.name && 
+          e.category === entry.category && 
+          e.score === entry.score && 
+          e.time === entry.time
+        );
+        return index === firstIndex;
+      });
+      return deduplicated.sort((a, b) => {
         if (b.score !== a.score) return b.score - a.score;
         return a.time - b.time; // lower time ranks higher when same score
       });
