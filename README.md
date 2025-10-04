@@ -2,19 +2,6 @@
 
 A modern, full-stack quiz application built with React, TypeScript, and Node.js. Users can take quizzes, view their scores, and compete on the leaderboard.
 
-## 📋 Table of Contents
-
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Prerequisites](#prerequisites)
-- [Installation & Setup](#installation--setup)
-- [Running the Application](#running-the-application)
-- [Testing](#testing)
-- [Project Structure](#project-structure)
-- [API Endpoints](#api-endpoints)
-- [Design Decisions](#design-decisions)
-- [Contributing](#contributing)
-
 ## ✨ Features
 
 - **Interactive Quiz Interface**: Clean, responsive UI with smooth animations
